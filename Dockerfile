@@ -1,6 +1,6 @@
 FROM jenkins:2.32.2-alpine
 MAINTAINER kontakt@jensmittag.de
 
-USER root
-RUN apk add --no-cache docker
-USER ${user}
+COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+ENTRYPOINT ["/bin/tini", "--", "/usr/local/bin/docker-entrypoint.sh"]
+CMD ["jenkins"]

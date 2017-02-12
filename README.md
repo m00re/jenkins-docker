@@ -58,7 +58,7 @@ services:
       - JENKINS_KEYSTORE_PASSWORD=
       - JENKINS_LOG_FILE=
       - JENKINS_USER_NAMES=slave
-      - JENKINS_USER_PERMISSIONS=hudson.model.Hudson.READ
+      - JENKINS_USER_PERMISSIONS=jenkins.model.Jenkins.READ:hudson.model.Computer.CONNECT:hudson.model.Computer.DISCONNECT:hudson.model.Computer.CREATE
       - JENKINS_USER_PASSWORDS=slave
 ```
 

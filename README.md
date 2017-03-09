@@ -34,6 +34,8 @@ In addition, the following configuration/environment variables are provided:
 - ```JENKINS_USER_NAMES```: a comma-separated list of users that shall be created upon first boot.
 - ```JENKINS_USER_PASSWORDS```: a comma-separated list of passwords that shall be used for these users.
 - ```JENKINS_USER_PERMISSIONS```: a comma-separated list of permissions that these users shall be granted. Each set of permissions is a double-point separated list of single permissions (e.g. ```hudson.model.Computer.CONNECT:hudson.model.Computer.DISCONNECT```)
+- ```JENKINS_GROUP_NAMES```: a comma-separated list of groups that shall be created upon first boot (since 2.32.3).
+- ```JENKINS_GROUP_PERMISSIONS```: a comma-separated list of permissions that these groups shall be granted. Each set of permissions is a double-point separated list of single permissions (since 2.32.3).
 
 ## Example ```docker-compose.yml```
 ```

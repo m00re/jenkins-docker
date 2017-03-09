@@ -130,8 +130,10 @@ if (!users || users.empty) {
   def userNames = "${JENKINS_USER_NAMES}".split(",")
   def userPasswords = "${JENKINS_USER_PASSWORDS}".split(",")
   def userPermissions = "${JENKINS_USER_PERMISSIONS}".split(",")
+
   if (userNames.size() == userPasswords.size() &&
-      userNames.size() == userPermissions.size()) 
+      userNames.size() == userPermissions.size() &&
+      !("".equals("${JENKINS_USER_NAMES}")))
   {
     logger.info("Creating additional users with custom permissions:")
     for (def i = 0; i < userNames.size(); i++) {
@@ -140,7 +142,9 @@ if (!users || users.empty) {
       logger.info("--> creating user: '" + name + "'")
       hudsonRealm.createAccount(name, password)
     }
-  } else {
+  } else if (userNames.size() != userPasswords.size() ||
+             userNames.size() != userPermissions.size()) 
+  {
     logger.error("The environment variables JENKINS_USER_NAMES, JENKINS_USER_PASSWORDS and JENKINS_USER_PERMISSIONS should contain an equal number of comma-separated entries")
   }
 } 
@@ -153,7 +157,7 @@ _EOF_
   cat > ${JENKINS_HOME}/init.groovy.d/setupAuthorization.groovy <<_EOF_
 import jenkins.model.*
 import hudson.security.*
-import hudson.security.csrf.*;
+import hudson.security.csrf.*
 import java.util.logging.Logger
 
 def logger = Logger.getLogger("")
@@ -168,6 +172,7 @@ Object getFieldValue(String path) throws Exception {
     return myClass.getDeclaredField(fieldName).get(null)
 }
 
+// Setup authorization
 if (pm.getPlugin("matrix-auth")) {
   if (instance.getAuthorizationStrategy() instanceof GlobalMatrixAuthorizationStrategy) {
     logger.info("Skipping configuration of GlobalMatrixAuthorizationStrategy as it is already configured.")
@@ -181,7 +186,8 @@ if (pm.getPlugin("matrix-auth")) {
     // Give users permissions based on provided configuration
     def userNames = "${JENKINS_USER_NAMES}".split(",")
     def userPermissions = "${JENKINS_USER_PERMISSIONS}".split(",")
-    if (userNames.size() == userPermissions.size()) {
+
+    if (userNames.size() == userPermissions.size() && !("".equals("${JENKINS_USER_NAMES}"))) {
       logger.info("Adding user permissions:")
       for (def i = 0; i < userNames.size(); i++) {
         def name = userNames[i]
@@ -197,8 +203,32 @@ if (pm.getPlugin("matrix-auth")) {
           }
         }
       }
-    } else {
+    } else if (userNames.size() != userPermissions.size()) {
       logger.error("The environment variables JENKINS_USER_NAMES and JENKINS_USER_PERMISSIONS should contain an equal number of comma-separated entries")
+    }
+
+    // Setup group permissions based on provided configuration
+    def groupNames = "${JENKINS_GROUP_NAMES}".split(",")
+    def groupPermissions = "${JENKINS_GROUP_PERMISSIONS}".split(",")
+
+    if (groupNames.size() == groupPermissions.size() && !("".equals("${JENKINS_GROUP_NAMES}"))) {
+      logger.info("Adding group permissions:")
+      for (def i = 0; i < groupNames.size(); i++) {
+        def name = groupNames[i]
+        def permissions = groupPermissions[i].split(":")
+        for (def j = 0; j < permissions.size(); j++) {
+          def permission = permissions[j]
+          try {
+            strategy.add(getFieldValue(permission), name)
+            logger.info("--> added permission '" + permission + "' to group '" + name + "'")
+          } catch (Exception e) {
+            logger.error("Failed to add permission '" + permission + "' to group '" + name + "'")
+            logger.error(e.getMessage())
+          }
+        }
+      }
+    } else if (groupNames.size() != groupPermissions.size()) {
+      logger.error("The environment variables JENKINS_GROUP_NAMES and JENKINS_GROUP_PERMISSIONS should contain an equal number of comma-separated entries")
     }       
 
     // Setting authorization strategy
@@ -244,6 +274,8 @@ _EOF_
   unset JENKINS_USER_NAMES
   unset JENKINS_USER_PASSWORDS
   unset JENKINS_USER_PERMISSIONS
+  unset JENKINS_GROUP_NAMES
+  unset JENKINS_GROUP_PERMISSIONS
   chmod 600 $JENKINS_HOME/init.groovy.d/*.groovy
 
   # Start jenkins

@@ -42,7 +42,7 @@ In addition, the following configuration/environment variables are provided:
 version: '2'
 services:
   jenkins:
-    image: m00re/jenkins-docker:2.46.2-alpine
+    image: m00re/jenkins-docker:2.46.3-alpine
     container_name: jenkins
     hostname: jenkins
     ports:

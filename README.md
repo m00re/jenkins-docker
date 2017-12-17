@@ -1,7 +1,7 @@
 # Jenkins-Docker
 
 This is a Jenkins docker image based on Alpine Linux. It is an extension of the official Jenkins images
-at https://hub.docker.com/_/jenkins/, and provides additional (security) configuration upon container start. 
+https://hub.docker.com/u/jenkins/, and provides additional (security) configuration upon container start. 
 
 ## Configuration Features
 - Creation of admin and normal users upon first boot
@@ -42,7 +42,7 @@ In addition, the following configuration/environment variables are provided:
 version: '2'
 services:
   jenkins:
-    image: m00re/jenkins-docker:2.60.2-alpine
+    image: m00re/jenkins-docker:2.89.2-alpine
     container_name: jenkins
     hostname: jenkins
     ports:

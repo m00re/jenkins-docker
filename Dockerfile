@@ -1,4 +1,4 @@
-FROM jenkins/jenkins:2.89.2-alpine
+FROM jenkins/jenkins:2.89.3-alpine
 MAINTAINER kontakt@jensmittag.de
 
 COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh

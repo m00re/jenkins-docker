@@ -42,13 +42,11 @@ In addition, the following configuration/environment variables are provided:
 version: '2'
 services:
   jenkins:
-    image: m00re/jenkins-docker:2.89.3-alpine
+    image: m00re/jenkins-docker:2.89.4-alpine
     container_name: jenkins
     hostname: jenkins
     ports:
      - "8080:8080"
-    volumes:
-      - jenkinsdata:/var/jenkins_home
     environment:
       - JAVA_VM_PARAMETERS=-Xmx1024m -Xms512m
       - JENKINS_PARAMETERS=

@@ -42,11 +42,13 @@ In addition, the following configuration/environment variables are provided:
 version: '2'
 services:
   jenkins:
-    image: m00re/jenkins-docker:2.89.4-alpine
+    image: m00re/jenkins-docker:2.178-alpine 
     container_name: jenkins
     hostname: jenkins
     ports:
      - "8080:8080"
+    volumes:
+      - jenkinsdata:/var/jenkins_home
     environment:
       - JAVA_VM_PARAMETERS=-Xmx1024m -Xms512m
       - JENKINS_PARAMETERS=
@@ -60,6 +62,9 @@ services:
       - JENKINS_USER_NAMES=slave
       - JENKINS_USER_PERMISSIONS=jenkins.model.Jenkins.READ:hudson.model.Computer.CONNECT:hudson.model.Computer.DISCONNECT:hudson.model.Computer.CREATE
       - JENKINS_USER_PASSWORDS=slave
+
+volumes:
+  jenkinsdata:
 ```
 
 ## Acknowledgements

@@ -1,0 +1,26 @@
+version: '2'
+services:
+  jenkins:
+    image: m00re/jenkins-docker:2.178-alpine
+    container_name: jenkins
+    hostname: jenkins
+    ports:
+      - "8080:8080"
+    volumes:
+      - jenkinsdata:/var/jenkins_home
+    environment:
+      - JAVA_VM_PARAMETERS=-Xmx1024m -Xms512m
+      - JENKINS_PARAMETERS=
+      - JENKINS_MASTER_EXECUTORS=0
+      - JENKINS_SLAVEPORT=50000
+      - JENKINS_PLUGINS=
+      - JENKINS_ADMIN_USER=admin
+      - JENKINS_ADMIN_PASSWORD=test
+      - JENKINS_KEYSTORE_PASSWORD=test1234
+      - JENKINS_LOG_FILE=
+      - JENKINS_USER_NAMES=slave
+      - JENKINS_USER_PERMISSIONS=jenkins.model.Jenkins.READ:hudson.model.Computer.CONNECT:hudson.model.Computer.DISCONNECT:hudson.model.Computer.CREATE
+      - JENKINS_USER_PASSWORDS=slave
+
+volumes:
+  jenkinsdata:
